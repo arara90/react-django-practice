@@ -2,7 +2,7 @@
 
 pip3 install pipenv
 
-pipenv shell (create virtualen  .. pipfile 생성됨)  pipenv로 터미널 변경
+pipenv shell 			> create virtualen  .. pipfile 생성됨)  pipenv로 터미널 변경
 
 code . 
 
@@ -21,6 +21,10 @@ python_version = "3.7"
 ```
 
 pipenv install django djangorestframework django-rest-knox ->(Pipfile.lock 생성)
+
+
+
+
 
 django-admin startproject leadmanager -> leadmanager폴더 생성
 
@@ -65,7 +69,9 @@ INSTALLED_APPS = [
 
  **nodeJS** -> 리얼타임, API-자바스크립트 BASE, 커스터마이징이 많을 때 /우버, 넷플릭스(스트리밍, 리얼타임 )
 
--> 장고는 박스에 필요한 것만 남기는 작업 / nodeJS는 빈 상자에 레고 쌓듯 차곡차곡 
+
+
+즉, 장고는 박스에 필요한 것만 남기는 작업 / nodeJS는 빈 곳에 레고를 쌓듯이 차곡차곡 
 
 
 
@@ -104,6 +110,10 @@ INSTALLED_APPS = [
 ​	왜일까?
 
 > PostgreSQL로 하자.
+
+**참고** https://pynative.com/python-postgresql-tutorial/
+
+
 
 
 
