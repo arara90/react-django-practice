@@ -79,10 +79,11 @@ WSGI_APPLICATION = 'SimTime.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'todoDB',
+        'NAME': 'todos',
         'USER': 'postgres',
-        'PASSWORD': '1234',
-        'HOST': 'localhost',
+        'PASSWORD': 'dkfk5377',
+        'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
+        'PORT': '5432'
     }
 }
 
