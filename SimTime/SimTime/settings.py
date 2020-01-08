@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'simtime_alpha',
+    'leads',
     'todos',
 ]
 
@@ -78,8 +78,16 @@ WSGI_APPLICATION = 'SimTime.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql', #django.db.backends.postgresql_psycopg2
         'NAME': 'todos',
+        'USER': 'postgres',
+        'PASSWORD': 'dkfk5377',
+        'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
+        'PORT': '5432'
+    },
+    'leads-db': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'leads',
         'USER': 'postgres',
         'PASSWORD': 'dkfk5377',
         'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
@@ -87,6 +95,12 @@ DATABASES = {
     }
 }
 
+
+DATABASE_ROUTERS = [
+    # 라우터는 입력한 순서대로 실행된다. 
+    'config.routers.MultiRouter',  
+    #'path.to.Classname' #path.to는 실제 router파일이 저장된 위치
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
