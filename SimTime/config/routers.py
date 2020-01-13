@@ -1,29 +1,21 @@
 class MultiRouter:
     def __init__(self):
-        print('hi')
+        print('routers')
         self.model_list = ['leads', 'default']
 
     def db_for_read(self, model, **hints):
         print('db_for_read')
-        if model._meta.app_label == 'leads':
-            return 'leads'
-        return 'default'
+        return 'leads' if model._meta.app_label == 'leads' else 'default'
 
     def db_for_write(self,model,**hints):
         print('db_for_write')
-        if model._meta.app_label == 'default':
-            return 'default'
-        return 'leads'
+        return 'leads' if model._meta.app_label == 'leads' else 'default'
 
     def allow_relation(self, obj1, obj2, **hints):
-        print('allow_relation')
-        db_list = ('lead', 'default')
-        if obj1._state.db in db_list and obj2._state.db in db_list:
-            return True
-        return None
+        return True
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        print(app_label)
+        # print(app_label)
         return True
 
 

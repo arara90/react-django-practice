@@ -99,6 +99,10 @@ class Todo(models.Model):
 
 ​		   https://docs.djangoproject.com/en/2.1/topics/db/multi-db/
 
+​		   https://hangpark.com/django-multi-db-relation/   ★★
+
+
+
 1. settings.py에 정보 입력
 
 ```python
@@ -172,11 +176,13 @@ class Lead(models.Model):
 
 
 
-5. makemigrations 명령어 결과
+5. makemigrations 명령어 결과 
 
    ![](https://github.com/arara90/images/blob/master/Simtime/react%20008.png?raw=true)
 
-   
+   -> 자꾸 default에 저장되어 실패했다.
+
+   -> [python manage.py makemigrations **leads**] 라고 명시하니 해당 디비로 반영되었음.
 
    
 
@@ -192,8 +198,6 @@ class Lead(models.Model):
 >>> # This will run on the 'other' database.
 >>> Author.objects.using('other').all()
 ```
-
-
 
 
 
