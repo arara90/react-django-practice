@@ -1,4 +1,4 @@
-from rest_Framework import serializers
+from rest_framework import serializers
 from leads.models import Leads
 
 #L Lead Serializer
