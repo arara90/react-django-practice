@@ -85,7 +85,7 @@ DATABASES = {
         'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
         'PORT': '5432'
     },
-    'leads-db': {
+    'leads': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'leads',
         'USER': 'postgres',
