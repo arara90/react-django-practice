@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Leads(models.Model):
+    objects = models.Manager()
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=100, unique=True)
     message = models.CharField(max_length=300, blank=True)
