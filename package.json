@@ -19,9 +19,8 @@
     "styled-components": "^5.0.0"
   },
   "scripts": {
-    "dev": "webpack --mode development ./Simtime/frontend/src/index.js --output ./Simtime/frontend/static/frontend/main.js",
+    "dev": "webpack --mode development --watch ./Simtime/frontend/src/index.js --output ./Simtime/frontend/static/frontend/main.js",
     "build": "webpack --mode production ./Simtime/frontend/src/index.js --output ./Simtime/frontend/static/frontend/main.js"
-
   },
   "repository": {
     "type": "git",
