@@ -177,7 +177,11 @@ module.exports = {
 
 1. bootwatch -> cosmo 선택  
 
+```
 <link rel ="stylesheet" href="https://bootswatch.com/4/cosmo/bootstrap.min.css"> 
+```
+
+
 
 2. getbootstrap.com
 
