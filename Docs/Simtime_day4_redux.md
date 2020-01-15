@@ -42,7 +42,7 @@ export default combineReducers({});
 
 ### frontend > src > components > App.js
 
-* Provider를 통해 감싼 하위 요소들이 store에 접근할 수 있다.
+* Provider 하위에 있는 컴포넌트는 리덕스의 상탯값이 변경되면 자동으로 렌더 함수가 호출되도록 할 수 있다.
 
 ```js
 import React, { Component, Fragment } from "react";
@@ -161,7 +161,7 @@ export default combineReducers({
 npm i axios
 ```
 
-
+* > *axios*는 Promise 기반의 자바스크립트 비동기 처리방식을 사용합니다. 그래서 요청후 .then()으로 결과값을 받아서 처리를 하는 형식으로 구성.
 
 #### dispatch
 
@@ -242,3 +242,279 @@ export default connect(mapStateToProps)(Leads);
 state에 leads가 있는 것을 확인. 
 
 하지만, 비어있다. 이것은 request만 요청했지 실제로 getleads를 call하지 않았다.
+
+-> props 로부터 해당 method를 call하자
+
+```js
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getLeads } from "../../actions/leads";
+
+export class Leads extends Component {
+  static propTypes = {
+    leads: PropTypes.array.isRequired
+  };
+
+// 1. add method
+  componentDidMount(){
+      this.props.getLeads();
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>Leads List</h1>
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  leads: state.leads.leads
+});
+
+// 2. add second parameter
+export default connect(mapStateToProps, { getLeads })(Leads);
+
+
+```
+
+* **connect** : 컴포넌트가 리덕스 상탯값 변경에 반응 하기 위해 connect함수 사용
+  * mapStateToProps : 상탯값을 기반으로 컴포넌트에서 **사용할 데이터를 속성값으로 전달**
+  * mapDispatchToProps : 리덕스의 상탯값을 변경하는 **함수를 컴포넌트의 속성값으로 전달**
+
+
+
+![Result](https://github.com/arara90/images/blob/master/Simtime/simtime%20021.png?raw=true)
+
+
+
+### 화면 구성해보기
+
+### src > components > leads > leads.js
+
+```js
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getLeads } from "../../actions/leads";
+
+export class Leads extends Component {
+  static propTypes = {
+    leads: PropTypes.array.isRequired
+  };
+
+  componentDidMount() {
+    this.props.getLeads();
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <h2>Leads</h2>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Message</th>
+              <th />
+            </tr>
+            <tbody>
+              {this.props.leads.map(lead => (
+                <tr key={lead.id}>
+                  <td>{lead.id}</td>
+                  <td>{lead.name}</td>
+                  <td>{lead.email}</td>
+                  <td>{lead.message}</td>
+                  <td>
+                    <button className="btn btn-danger btn-sm">Delete</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </thead>
+        </table>
+      </Fragment>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  leads: state.leads.leads
+});
+
+export default connect(mapStateToProps, { getLeads })(Leads);
+
+// when the component mounts and the leads come down from the reducer into the component as a prop
+// we need to get the state and be able to call this get leads ethod
+
+```
+
+![Result2](https://github.com/arara90/images/blob/master/Simtime/simtime%20022.png?raw=true)
+
+
+
+### Delete lead를 만들어보자! [3단계]
+
+##### 1. action> lead,type에 DELETE_LEAD 추가
+
+##### 2. reducers에 로직 추가
+
+##### 3. component에 onClick 추가
+
+
+
+![Result3](https://github.com/arara90/images/blob/master/Simtime/simtime%20023.png?raw=true)
+
+
+
+==================================== result =============================================
+
+#### 1. action> lead,type에 DELETE_LEAD 추가
+
+```js
+export const GET_LEADS = "GET_LEADS";
+export const DELETE_LEAD = "DELETE_LEAD";
+```
+
+```js
+import axios from "axios";
+import { GET_LEADS, DELETE_LEAD } from "./types";
+
+// GET LEADS
+export const getLeads = () => dispatch => {
+  axios
+    .get("/api/leads/")
+    .then(res => {
+      // pass in an object with a type
+      dispatch({
+        type: GET_LEADS,
+        payload: res.data
+      });
+    })
+    .catch(err => console.log(err));
+};
+
+// DELETE LEAD
+export const deleteLead = id => dispatch => {
+  axios
+    .delete(`/api/leads/${id}/`)
+    .then(res => {
+      // pass in an object with a type
+      dispatch({
+        type: DELETE_LEAD,
+        payload: id
+      });
+    })
+    .catch(err => console.log(err));
+};
+
+```
+
+* 삭제할 id전달
+* `${id}`
+* payload에 id를 담는다.
+
+
+
+
+
+#### 2. reducers에 로직 추가
+
+```js
+import { GET_LEADS, DELETE_LEAD } from "../actions/types";
+
+const initialState = {
+  leads: []
+};
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case GET_LEADS:
+      return {
+        ...state,
+        leads: action.payload
+      };
+    case DELETE_LEAD:
+      return {
+        ...state,
+        leads: state.leads.filter(lead => lead.id !== action.payload)
+      };
+    default:
+      return state;
+  }
+}
+```
+
+* filter 사용
+
+  
+
+#### 3.component에 onClick 추가
+
+```js
+import React, { Component, Fragment } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { getLeads, deleteLead } from "../../actions/leads";
+
+export class Leads extends Component {
+  static propTypes = {
+    leads: PropTypes.array.isRequired
+  };
+
+  componentDidMount() {
+    this.props.getLeads();
+  }
+
+  render() {
+    return (
+      <Fragment>
+        <h2>Leads</h2>
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Message</th>
+              <th />
+            </tr>
+            <tbody>
+              {this.props.leads.map(lead => (
+                <tr key={lead.id}>
+                  <td>{lead.id}</td>
+                  <td>{lead.name}</td>
+                  <td>{lead.email}</td>
+                  <td>{lead.message}</td>
+                  <td>
+                    <button
+                      onClick={this.props.deleteLead.bind(this, lead.id)}
+                      className="btn btn-danger btn-sm"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </thead>
+        </table>
+      </Fragment>
+    );
+  }
+}
+
+const mapStateToProps = state => ({
+  leads: state.leads.leads
+});
+
+export default connect(mapStateToProps, { getLeads, deleteLead })(Leads);
+```
+
+* bind 하는 이유:  https://www.zerocho.com/category/React/post/578232e7a479306028f43393
+
+  this가 window나 undefined가 되기 때문에 확실히 해당 컴포넌트에 bind시켜줘야 lead.id를 제대로 찾을 수 있음.
