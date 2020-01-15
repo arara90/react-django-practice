@@ -149,7 +149,9 @@ export default combineReducers({
 
 
 
-============================================================================
+-- --
+
+
 
 ### frontend > src > actions> leads.js
 
@@ -357,13 +359,17 @@ export default connect(mapStateToProps, { getLeads })(Leads);
 
 
 
+-- --
+
+
+
 ### Delete lead를 만들어보자! [3단계]
 
-##### 1. action> lead,type에 DELETE_LEAD 추가
+#### 1. action> lead,type에 DELETE_LEAD 추가
 
-##### 2. reducers에 로직 추가
+#### 2. reducers에 로직 추가
 
-##### 3. component에 onClick 추가
+#### 3. component에 onClick 추가
 
 
 
@@ -371,9 +377,11 @@ export default connect(mapStateToProps, { getLeads })(Leads);
 
 
 
-==================================== result =============================================
+#### 4. code확인 
 
-#### 1. action> lead,type에 DELETE_LEAD 추가
+
+
+##### 1. action> lead,type에 DELETE_LEAD 추가
 
 ```js
 export const GET_LEADS = "GET_LEADS";
@@ -415,14 +423,14 @@ export const deleteLead = id => dispatch => {
 ```
 
 * 삭제할 id전달
-* `${id}`
+* .delete(`${id}`)
 * payload에 id를 담는다.
 
 
 
 
 
-#### 2. reducers에 로직 추가
+##### 2. reducers에 로직 추가
 
 ```js
 import { GET_LEADS, DELETE_LEAD } from "../actions/types";
@@ -453,7 +461,7 @@ export default function(state = initialState, action) {
 
   
 
-#### 3.component에 onClick 추가
+##### 3.component에 onClick 추가
 
 ```js
 import React, { Component, Fragment } from "react";
@@ -483,25 +491,25 @@ export class Leads extends Component {
               <th>Message</th>
               <th />
             </tr>
-            <tbody>
-              {this.props.leads.map(lead => (
-                <tr key={lead.id}>
-                  <td>{lead.id}</td>
-                  <td>{lead.name}</td>
-                  <td>{lead.email}</td>
-                  <td>{lead.message}</td>
-                  <td>
-                    <button
-                      onClick={this.props.deleteLead.bind(this, lead.id)}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
           </thead>
+          <tbody>
+            {this.props.leads.map(lead => (
+              <tr key={lead.id}>
+                <td>{lead.id}</td>
+                <td>{lead.name}</td>
+                <td>{lead.email}</td>
+                <td>{lead.message}</td>
+                <td>
+                  <button
+                    onClick={this.props.deleteLead.bind(this, lead.id)}
+                    className="btn btn-danger btn-sm"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
       </Fragment>
     );

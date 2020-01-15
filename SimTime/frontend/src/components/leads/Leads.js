@@ -5,7 +5,9 @@ import { getLeads, deleteLead } from "../../actions/leads";
 
 export class Leads extends Component {
   static propTypes = {
-    leads: PropTypes.array.isRequired
+    leads: PropTypes.array.isRequired,
+    getLeads: PropTypes.func.isRequired,
+    deleteLead: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -36,7 +38,6 @@ export class Leads extends Component {
                 <td>
                   <button
                     onClick={this.props.deleteLead.bind(this, lead.id)}
-                    // bind 하는 이유:  https://www.zerocho.com/category/React/post/578232e7a479306028f43393
                     className="btn btn-danger btn-sm"
                   >
                     Delete
