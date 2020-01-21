@@ -19,6 +19,7 @@ import Alerts from "./layout/Alerts";
 import Login from "./accounts/Login";
 import Register from "./accounts/Register";
 import PrivateRoute from "./common/privateRoute";
+import { loadUser } from "../actions/auth";
 
 // Alert Options
 const alertOptions = {
@@ -27,7 +28,12 @@ const alertOptions = {
 };
 
 class App extends Component {
+  componentDidMount() {
+    alert(loadUser);
+    store.dispatch(loadUser);
+  }
   render() {
+    store.dispatch(loadUser);
     return (
       <Provider store={store}>
         <AlertProvider template={AlertTemplate} {...alertOptions}>
@@ -37,12 +43,9 @@ class App extends Component {
               <Alerts />
               <div className="container">
                 <Switch>
-                  {/* <Router exact path="/" component={Dashboard} />
-                  <Router exact path="/register" component={Register} />
-                  <Router exact path="/login" component={Login} /> */}
                   <PrivateRoute exact path="/" component={Dashboard} />
-                  <PrivateRoute exact path="/register" component={Register} />
-                  <PrivateRoute exact path="/login" component={Login} />
+                  <Route exact path="/register" component={Register} />
+                  <Route exact path="/login" component={Login} />
                 </Switch>
               </div>
             </Fragment>
