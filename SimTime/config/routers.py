@@ -1,53 +1,32 @@
 class MultiRouter:
+    db_map = {
+        'db-todos': 'todos'
+    }
+
     def __init__(self):
-        print('routers')
-        self.model_list = ['leads', 'default']
+        print('routers ')
 
     def db_for_read(self, model, **hints):
-        print('db_for_read')
-        return 'leads' if model._meta.app_label == 'leads' else 'default'
+        print('db_for_read:', model._meta.app_label)
+        if(model._meta.app_label in self.db_map.values()):
+            return 'db-' + model._meta.app_label
+        else:
+            return 'default'
 
-    def db_for_write(self,model,**hints):
-        print('db_for_write')
-        return 'leads' if model._meta.app_label == 'leads' else 'default'
+    def db_for_write(self, model, **hints):
+        print('db_for_write: ', model._meta.app_label)
+        if(model._meta.app_label in self.db_map.values()):
+            return 'db-' + model._meta.app_label
+        else:
+            return 'default'
 
     def allow_relation(self, obj1, obj2, **hints):
         return True
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        # print(app_label)
-        return True
+        # print('here:                ', db, app_label, model_name)
+        if (db in self.db_map.keys()):
+            return app_label == self.db_map.get(db)
 
-
-
-# 실제 
-# import random
-
-# class PrimaryReplicaRouter:
-#     def db_for_read(self, model, **hints):
-#         """
-#         Reads go to a randomly-chosen replica.
-#         """
-#         return random.choice(['replica1', 'replica2'])
-
-#     def db_for_write(self, model, **hints):
-#         """
-#         Writes always go to primary.
-#         """
-#         return 'primary'
-
-#     def allow_relation(self, obj1, obj2, **hints):
-#         """
-#         Relations between objects are allowed if both objects are
-#         in the primary/replica pool.
-#         """
-#         db_list = ('primary', 'replica1', 'replica2')
-#         if obj1._state.db in db_list and obj2._state.db in db_list:
-#             return True
-#         return None
-
-#     def allow_migrate(self, db, app_label, model_name=None, **hints):
-#         """
-#         All non-auth models end up in this pool.
-#         """
-#         return True
+        else:
+            return app_label not in self.db_map.values()

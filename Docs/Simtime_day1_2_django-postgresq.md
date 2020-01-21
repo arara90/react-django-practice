@@ -1,5 +1,7 @@
 참고 : https://www.youtube.com/watch?v=Nnoxz9JGdLU
 
+참고 : [Django 기본 05 - Migration](https://wayhome25.github.io/django/2017/03/20/django-ep6-migrations/)
+
 
 
 **postgresql 설치**
@@ -53,6 +55,8 @@ INSTALLED_APPS = [
 
 
 
+**모델 정의**
+
 app폴더 내 models.py에
 
 ```python
@@ -65,40 +69,42 @@ class Todo(models.Model):
 
 
 
-DB 적용 명령어들
+### DB 적용 명령어들
 
 ```
-python manage.py makemigrations todos
-xxx 
-python manage.py sqlmigrate todos xxx
-python manage.py migrate -> execute in actualDB 
+python manage.py makemigrations todos		# migration 파일 생성
+python manage.py sqlmigrate todos 001		# 지정 migrations의 sql 확인하기
+python manage.py migrate 					# execute in actualDB 
+python manage.py showmigrations [app-name] 	# app별 migrations와 migrate 여부 ([X]:적용)
 ```
 
 
 
-[실습]
+실습]
 
 1. 기본 app들의 models 적용
 
    -> models.py에 작성한 부분 일단 주석처리하고 아래 코드를 실행해보자. (마지막코드만 실행)
 
    ```
-   python manage.py migrate
+   python manage.py migrate (app-name) [--DATABASE connectionName]
    ```
 
 
 
 ​	-> migrations 폴더에 __init__
 
-​    -> postgresql admin -> schema -> table에 table생성됨
+​    -> postgresql admin -> schema -> table에장고 기본 앱에 필요한 table들 생성
 
 
 
-2. models.py 주석처리 지우고 세개의 명령어 ㄱㄱ
+2. models.py 주석처리 지우고 세개의 명령어 입력
 
-   1. > 0001_initial 
+   1. python manage.py makemigrations todos
 
-   2. python manage.py sqlmigrate todos 0001
+      > 0001_initial 
+   
+   2. python manage.py sqlmigrate todos 0001 
 
 ```
 BEGIN;
@@ -109,7 +115,7 @@ CREATE TABLE "todos_todo" ("id" serial NOT NULL PRIMARY KEY, "content" text NOT 
 COMMIT;
 ```
 
-3. python manage.py migrate ->  DB에 실제 반영되었다. schema -> tables 에 todss_todo 반영된 것 확인
+3. python manage.py migrate ->  DB에 실제 반영되었다. schema -> tables 에 todos_todo 반영된 것 확인
 
 
 
@@ -135,7 +141,7 @@ COMMIT;
    ]
    ```
 
-3. views.py에 보여줄 페이지 생성
+3. views.py에 보여줄 페이지 연결
 
    ```python
    from django.shortcuts import render

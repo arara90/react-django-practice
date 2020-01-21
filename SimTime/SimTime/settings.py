@@ -40,8 +40,16 @@ INSTALLED_APPS = [
     'rest_framework',
     'leads',
     'todos',
-    'frontend'
+    'frontend',
+    'knox',
+    'accounts'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':
+    ('knox.auth.TokenAuthentication', )
+    # Tuple에서 ,를 제외하면 string으로 인식한다.
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -79,28 +87,29 @@ WSGI_APPLICATION = 'SimTime.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql', #django.db.backends.postgresql_psycopg2
-        'NAME': 'todos',
-        'USER': 'postgres',
-        'PASSWORD': 'dkfk5377',
-        'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
-        'PORT': '5432'
-    },
-    'leads': {
+        # django.db.backends.postgresql_psycopg2
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'leads',
         'USER': 'postgres',
         'PASSWORD': 'dkfk5377',
-        'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
+        'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com',  # endpoint
+        'PORT': '5432'
+    },
+    'db-todos': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'todos',
+        'USER': 'postgres',
+        'PASSWORD': 'dkfk5377',
+        'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com',  # endpoint
         'PORT': '5432'
     }
 }
 
 
 DATABASE_ROUTERS = [
-    # 라우터는 입력한 순서대로 실행된다. 
-    'config.routers.MultiRouter',  
-    #'path.to.Classname' #path.to는 실제 router파일이 저장된 위치
+    # 라우터는 입력한 순서대로 실행된다.
+    'config.routers.MultiRouter',
+    # 'path.to.Classname' #path.to는 실제 router파일이 저장된 위치
 ]
 
 # Password validation

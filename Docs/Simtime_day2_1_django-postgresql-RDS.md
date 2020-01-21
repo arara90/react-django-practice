@@ -2,7 +2,7 @@
 
 
 
- PC 두 대로 왔다갔다 작업할 예정이다. 작업 소스까지는 git으로 해도 DB 수정 내역까지 매번 새롭게 적용하는 게 불편할 것 같다. 내친김에 AWS를 써보자. 
+  PC 두 대로  작업할 예정이다. 작업 소스까지는 git으로 해도 DB 수정 내역까지 매번 새롭게 적용하는 게 불편할 것 같다. 내친김에 AWS로 postgresql을 써보자. 
 
 [](https://docs.aws.amazon.com/ko_kr/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html#USER_ConnectToPostgreSQLInstance.Troubleshooting)
 
@@ -11,6 +11,8 @@ Amazon RDS ->데이터베이스만들기-> postgresql 생성
 프리티어를 사용할 예정이라 딱히 더 설정할 것도 없다.
 
 
+
+##### 보안그룹 설정
 
  단, 로컬 pgAdmin에서 접근( [인스턴스 연결](https://docs.aws.amazon.com/ko_kr/AmazonRDS/latest/UserGuide/USER_ConnectToPostgreSQLInstance.html#USER_ConnectToPostgreSQLInstance.Troubleshooting) )할 때, 연결문제가 생기는데, 보안그룹 추가를 해줘야한다.
 
@@ -67,7 +69,7 @@ DATABASES = {
 
 
 
-models.py
+##### models.py
 
 ```python
 #Create your models here.
@@ -77,13 +79,13 @@ class Todo(models.Model):
 
 
 
-적용해보기!
+##### 적용해보기!
 
 ![](https://github.com/arara90/images/blob/master/Simtime/react%20006.png?raw=true)
 
 
 
-확인
+##### 확인
 
 ![](https://github.com/arara90/images/blob/master/Simtime/react%20007.png?raw=true)
 
@@ -103,11 +105,11 @@ class Todo(models.Model):
 
 
 
-1. settings.py에 정보 입력
+1. ##### settings.py에 정보 입력
 
 ```python
 DATABASES = {
-    'default': {
+    'default': {	#connectionsName
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'todos',
         'USER': 'postgres',
@@ -115,7 +117,7 @@ DATABASES = {
         'HOST': 'postgres-ara.c4kogceiqedh.us-east-2.rds.amazonaws.com', #endpoint
         'PORT': '5432'
     },
-    'leads-db': {
+    'leads-db': {	#connectionsName
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'leads',
         'USER': 'postgres',
@@ -128,13 +130,13 @@ DATABASES = {
 
 
 
-2. settings.py에 db ROUTER 만들기
+2. ##### settings.py에 db ROUTER 만들기
 
 ```python
 DATABASE_ROUTERS = [
     # 라우터는 입력한 순서대로 실행된다. 
     #'path.to.Classname' #path.to는 실제 router파일이 저장된 위치
-    # 나는 config 폴더를 만들었음
+    # config 폴더 내 routers.py 파일의 MultiRouter Class
     'config.routers.MultiRouter',  
 
 ]
@@ -142,28 +144,31 @@ DATABASE_ROUTERS = [
 
 
 
-3. router 파일 만들기 (프로젝트 폴더에)
+3. ##### router 파일 만들기 (프로젝트 폴더에)
+
+   *  https://docs.djangoproject.com/en/2.1/topics/db/multi-db/ 참고해서 method별로 확인
 
 ```python
 class MultiRouter:
     def db_for_read(self, model, **hints):
         if model._meta.app_label == 'leads':
-            return 'leads'
+            return 'leads-db' # db-connection명 return
         return 'default'
 
     def db_for_write(self,model,**hints):
         if model._meta.app_label == 'leads':
-            return 'leads'
+            return 'leads-db'
         return 'default'
-
-
-```
-
-
-
-4. models.py 작성해보자
+    
+    ...
 
 ```
+
+
+
+4. **models.py 작성해보자**
+
+```python
 from django.db import models
 
 # Create your models here.
@@ -176,17 +181,41 @@ class Lead(models.Model):
 
 
 
-5. makemigrations 명령어 결과 
+5. ##### makemigrations 명령어 결과 
 
    ![](https://github.com/arara90/images/blob/master/Simtime/react%20008.png?raw=true)
 
-   -> 자꾸 default에 저장되어 실패했다.
-
-   -> [python manage.py makemigrations **leads**] 라고 명시하니 해당 디비로 반영되었음.
-
    
 
-4. 혹은 쿼리에 직접 명시하기
+6. ##### DB 반영
+
+* 자꾸 default에 저장되어 실패했다. -> routers.py 제대로 작성했는지 확인. 
+
+  * 후에 allow_migrate에서 제어할 수 있었다.
+
+    ```python
+    class MultiRouter:
+    	db_map = {
+            'db-todos': 'todos'
+        }
+     	def allow_migrate(self, db, app_label, model_name=None, **hints):
+            # print('here:                ', db, app_label, model_name)
+            if (db in self.db_map.keys()):
+                return app_label == self.db_map.get(db)
+    
+            else:
+                return app_label not in self.db_map.values()
+    ```
+
+    
+
+* [python manage.py makemigrations **leads**] : leads 앱의 migrations 저장
+
+* [python manage.py migrate **leads** --DATABASE 'leads-db']  직접 명시하여 leads-db에 leads migrations내용 저장
+
+  
+
+* 쿼리에 직접 명시하기
 
 ```
 >>> # This will run on the 'default' database.
@@ -196,7 +225,7 @@ class Lead(models.Model):
 >>> Author.objects.using('default').all()
 
 >>> # This will run on the 'other' database.
->>> Author.objects.using('other').all()
+>>> Author.objects.using('other-db').all()
 ```
 
 

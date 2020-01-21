@@ -24,8 +24,6 @@ pipenv install django djangorestframework django-rest-knox ->(Pipfile.lock 생�
 
 
 
-
-
 django-admin startproject leadmanager -> leadmanager폴더 생성
 
 
@@ -41,23 +39,23 @@ django-admin startproject leadmanager
 앱 생성
 
 cd .\leadmanager\       
+
 python manage.py startapp leads
 
 
 
-settings.py로 이동해서 
+settings.py로 이동해서  app등록 (simtime, rest_framework)
 
 ```
 INSTALLED_APPS = [
-'simtime_alpha',
-'rest_framework'
 'django.contrib.admin',
 'django.contrib.auth',
 'django.contrib.contenttypes',
 'django.contrib.sessions',
 'django.contrib.messages',
 'django.contrib.staticfiles',
-
+'simtime',
+'rest_framework'
 ]
 ```
 
@@ -69,8 +67,6 @@ INSTALLED_APPS = [
 
  **nodeJS** -> 리얼타임, API-자바스크립트 BASE, 커스터마이징이 많을 때 /우버, 넷플릭스(스트리밍, 리얼타임 )
 
-
-
 즉, 장고는 박스에 필요한 것만 남기는 작업 / nodeJS는 빈 곳에 레고를 쌓듯이 차곡차곡 
 
 
@@ -79,7 +75,7 @@ INSTALLED_APPS = [
 
 
 
-### 모듈번들러 -> 웹팩, PArcel
+### 모듈번들러 -> 웹팩, Parcel
 
 : 여러개로 나뉜 파일들을 하나의 파일로 만들어줌
 
@@ -96,8 +92,6 @@ INSTALLED_APPS = [
 2. 최신 JS문법을 브라우저에서 사용하도록 변환 
 
 3. 초기 로딩 속도 느린것을 보완하기 위해서 -> 청크, 캐시, 코드스플릿 개념 도입
-
-#### 
 
 
 
