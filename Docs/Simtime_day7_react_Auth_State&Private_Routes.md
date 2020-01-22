@@ -24,83 +24,7 @@ npm i react-router-dom
 
 
 
-#### Reducers
-
-##### frontend > src > components > reducers > auth.js
-
-```js
-const initialState = {
-  token: localStorage.getItem("token"),
-  isAuthenticated: null,
-  isLoading: false,
-  user: null
-};
-
-export default function(state = initialState, action) {
-  switch (action.type) {
-    default:
-      return state;
-  }
-}
-
-```
-
-```js
-// index.js
-import { combineReducers } from "redux";
-import leads from "./leads";
-import errors from "./errors";
-import messages from "./messages";
-import auth from "./auth";
-
-export default combineReducers({
-  leads,
-  errors,
-  messages,
-  auth
-});
-
-```
-
-
-
-#### privateRoute
-
-##### frontend > src > components > common > privateRoute.js
-
-```js
-import React from "react";
-import { Route, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
-
-const PrivateRoute = ({ component: Component, auth, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={props => {
-        if (auth.isLoading) {
-          return <h2>Loading</h2>;
-        } else if (auth.isAuthenticated) {
-          return <Redirect to="/login" />;
-        } else {
-          return <Component {...props}></Component>;
-        }
-      }}
-    />
-  );
-};
-
-const mapStateToProps = state => ({
-  auth: state.auth
-});
-
-export default connect(mapStateToProps)(PrivateRoute);
-
-```
-
-
-
-#### UI - Layout
+### UI
 
 ##### frontend > src > components > layout > Login.js
 
@@ -348,8 +272,8 @@ class App extends Component {
                   <Router exact path="/register" component={Register} />
                   <Router exact path="/login" component={Login} /> */}
                   <PrivateRoute exact path="/" component={Dashboard} />
-                  <PrivateRoute exact path="/register" component={Register} />
-                  <PrivateRoute exact path="/login" component={Login} />
+                  <Router exact path="/register" component={Register} />
+                  <Router exact path="/login" component={Login} />
                 </Switch>
               </div>
             </Fragment>
@@ -367,6 +291,225 @@ ReactDom.render(<App />, document.getElementById("app"));
 
 
 
+### State로 Auth 관리
 
+##### frontend > src > components > reducers > auth.js
+
+```js
+const initialState = {
+  token: localStorage.getItem("token"),
+  isAuthenticated: null, // Once we login or load the user, this will get turn true.
+  isLoading: false, // When we make a request, It will be 'true'
+  user: null
+};
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    default:
+      return state;
+  }
+}
+
+```
+
+```js
+// index.js
+import { combineReducers } from "redux";
+import leads from "./leads";
+import errors from "./errors";
+import messages from "./messages";
+import auth from "./auth";
+
+export default combineReducers({
+  leads,
+  errors,
+  messages,
+  auth
+});
+
+```
 
 ![authInState](https://github.com/arara90/images/blob/master/Simtime/simtime%20043.png?raw=true)
+
+
+
+### privateRoute
+
+* Check to see if the user is logged in.
+
+##### frontend > src > components > common > privateRoute.js
+
+```js
+import React from "react";
+import { Route, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+
+const PrivateRoute = ({ component: Component, auth, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props => {
+        if (auth.isLoading) {
+             // Between firing or the action and getting response from the request, It's gonna be in this loading State. 
+          return <h2>Loading</h2>;
+        } else if (!auth.isAuthenticated) {
+            // Checking
+          return <Redirect to="/login" />;
+        } else {
+          return <Component {...props}></Component>;
+        }
+      }}
+    />
+  );
+};
+
+const mapStateToProps = state => ({
+  auth: state.auth
+});
+
+export default connect(mapStateToProps)(PrivateRoute);
+
+```
+
+
+
+
+
+### Action
+
+#### load-user-actions
+
+* Why? REST API는 stateless하기 떄문에 유저가 로그인 한 상태인지 지속적으로  체크해야한다. 
+
+  즉, component가 로드될 대마다 체크한다.
+
+> **Stateless**?
+>
+> **REST(Representational State Transfer) API**는 HTTP의 특성을 이용하기 때문에 stateless(무상태성)을 갖는다. 즉, 서버에 어떤 작업을 하기 위해 상태정보를 기억할 필요가 없고, 들어온 요청에 대해 처리만 해준다.
+
+* load user 액션은 auth API에 token과 함께 auth user를 요청하고, isAuthenticated를 결정한다.
+
+
+
+##### 1. action > type.js
+
+$$
+
+$$
+
+```js
+export const USER_LOADING = "USER_LOADING";
+export const USER_LOADED = "USER_LOADED";
+export const AUTH_ERROR = "AUTH_ERROR";
+```
+
+
+
+##### 2. reducers > auth.js
+
+```js
+import { USER_LOADING, USER_LOADED, AUTH_ERROR } from "../actions/types";
+
+const initialState = {
+  token: localStorage.getItem("token"),
+  isAuthenticated: null,
+  isLoading: false,
+  user: null
+};
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case USER_LOADING:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case USER_LOADED:
+      return {
+        ...state,
+        isAuthenticated: true,
+        isLoading: false,
+        user: action.payload
+      };
+    case AUTH_ERROR:
+      localStorage.removeItem("token");
+      return {
+        ...state,
+        token: null,
+        user: null,
+        isAuthenticated: false,
+        isLoading: false
+      };
+
+    default:
+      return state;
+  }
+}
+
+```
+
+
+
+##### 3. actions > auth.js
+
+```js
+import axios from "axios";
+import { returnErrors } from "./messages";
+import { USER_LOADED, USER_LOADING, AUTH_ERROR } from "./types";
+
+// CHECK  THE TOKEN & LOAD USER
+export const loadUser = () => (dispatch, getState) => {
+  // User Loading
+  dispatch({ type: USER_LOADING });
+
+  // Get Token from state
+  const token = getState().auth.token;
+
+  // Haders
+  const config = {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  };
+
+  // If token, add to headers config
+  if (token) {
+    config.headers["Authorization"] = `Token ${token}`;
+  }
+
+  //
+  axios
+    .get("/api/auth/user", config)
+    .then(res => {
+      dispatch({
+        type: USER_LOADED,
+        payload: res.data
+      });
+    })
+    .catch(err => {
+      dispatch(returnErrors(err.response.data, err.response.status));
+      dispatch({
+        type: AUTH_ERROR
+      });
+    });
+};
+
+```
+
+
+
+##### 5. App.js
+
+```js
+// loadUser 추가
+import store from "../store";
+import { loadUser } from "../actions/auth";
+
+//...
+class App extends Component {
+  componentDidMount(){
+    store.dispatch(loadUser());
+  }
+
+```
+

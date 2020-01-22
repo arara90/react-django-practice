@@ -22,6 +22,12 @@ HTTP 기본메서드 4가지 POST, GET, PUT, DELETE 를 통해 컨벤션을 유�
 
 
 
+### REST API
+
+[https://velog.io/@wlsdud2194/HTTP-REST-API-%EB%9E%80](https://velog.io/@wlsdud2194/HTTP-REST-API-란)
+
+
+
 ### Serializers
 
 Serializers allow **complex data** such as querysets and model instances **to be converted to native Python datatypes** that can then be easily rendered into `JSON`, `XML` or other content types. Serializers **also provide deserialization**, allowing **parsed data to be converted back into complex types, after first validating the incoming data.**

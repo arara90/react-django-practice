@@ -21,11 +21,13 @@ class RegisterAPI(generics.GenericAPIView):
             "user": UserSerializer(
                 user,  # pass user object
                 context=self.get_serializer_context()
-            ).data,
+                ).data,
 
             # Token은 Header에 담기게되고, 이를 활용해서 user를 식별,인증함
             "token": token
         })
+
+
 # Login API
 class LoginAPI(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -46,9 +48,6 @@ class LoginAPI(generics.GenericAPIView):
             # Token은 Header에 담기게되고, 이를 활용해서 user를 식별,인증함
             "token": token
         })
-
-
-
 
 
 # Get User API

@@ -16,6 +16,7 @@ import store from "../store";
 import Header from "./layout/Header";
 import Dashboard from "./leads/Dashboard";
 import Alerts from "./layout/Alerts";
+
 import Login from "./accounts/Login";
 import Register from "./accounts/Register";
 import PrivateRoute from "./common/privateRoute";
@@ -29,11 +30,10 @@ const alertOptions = {
 
 class App extends Component {
   componentDidMount() {
-    alert(loadUser);
-    store.dispatch(loadUser);
+    store.dispatch(loadUser());
   }
+
   render() {
-    store.dispatch(loadUser);
     return (
       <Provider store={store}>
         <AlertProvider template={AlertTemplate} {...alertOptions}>

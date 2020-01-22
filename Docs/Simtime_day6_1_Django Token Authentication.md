@@ -122,8 +122,9 @@ dev tool로 확인하면, 403 Error (Forbidden)발생. Error에 state를 넣어 
       });
   };
   
-```
-  
+  ```
+
+
 
 ![authError](https://github.com/arara90/images/blob/master/Simtime/simtime%20033.png?raw=true)
 
@@ -147,8 +148,8 @@ dev tool로 확인하면, 403 Error (Forbidden)발생. Error에 state를 넣어 
 
 * **setting.py** 에 등록하기
 
-  ```
-  INSTALLED_APPS = [
+```
+INSTALLED_APPS = [
       'django.contrib.admin',
       'django.contrib.auth',
       'django.contrib.contenttypes',
@@ -161,15 +162,18 @@ dev tool로 확인하면, 403 Error (Forbidden)발생. Error에 state를 넣어 
       'frontend',
       'knox'
   ]
-  
+
   ...
   REST_FRAMEWORK = {
       'DEFAULT_AUTHENTICATION_CLASSES':
       ('knox.auth.TokenAuthentication', )
-      # Tuple에서 ,를 제외하면 string으로 인식한다.
+
+
+
+# Tuple에서 ,를 제외하면 string으로 인식한다.
+
   }
-  
-  ```
+```
 
   그리고 python manage.py migrate
 
@@ -177,9 +181,9 @@ dev tool로 확인하면, 403 Error (Forbidden)발생. Error에 state를 넣어 
 
 * **accounts 앱 만들고 serializers.py 생성하기**
 
-  ```
   python manage.py startapp accounts
-  ```
+
+
 
 * **accounts > serializers.py**
 
@@ -213,7 +217,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 # Login Serializer
-
 ```
 
 **validate_data** : To make sure it's the right type of data following the structure of a User model which we didn't create (that's included with django)

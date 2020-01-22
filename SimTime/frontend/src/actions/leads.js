@@ -1,6 +1,7 @@
 // http requests
 import axios from "axios";
 import { createMessage, returnErrors } from "./messages";
+import { tokenConfig } from "./auth";
 
 import {
   GET_LEADS,
@@ -11,9 +12,9 @@ import {
 } from "./types";
 
 // GET LEADS
-export const getLeads = () => dispatch => {
+export const getLeads = () => (dispatch, getState) => {
   axios
-    .get("/api/leads/")
+    .get("/api/leads/", tokenConfig(getState))
     .then(res => {
       // pass in an object with a type
       dispatch({
@@ -27,9 +28,9 @@ export const getLeads = () => dispatch => {
 };
 
 // DELETE LEAD
-export const deleteLead = id => dispatch => {
+export const deleteLead = id => (dispatch, getState) => {
   axios
-    .delete(`/api/leads/${id}/`)
+    .delete(`/api/leads/${id}/`, tokenConfig(getState))
     .then(res => {
       dispatch(createMessage({ deleteLead: "Lead Deleted" }));
       // pass in an object with a type
@@ -42,9 +43,9 @@ export const deleteLead = id => dispatch => {
 };
 
 // ADD LEAD
-export const addLead = lead => dispatch => {
+export const addLead = lead => (dispatch, getState) => {
   axios
-    .post(`/api/leads/`, lead)
+    .post(`/api/leads/`, lead, tokenConfig(getState))
     .then(res => {
       // pass in an object with a type
       dispatch({
