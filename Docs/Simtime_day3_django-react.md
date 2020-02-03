@@ -484,7 +484,7 @@ export default Header
 
 
 
-> [ tips ] extention [**Prettier** - Code formatteresbenp]
+> [ tips ] extention [**Prettier** - Code formatter]
 >
 > -> 자동으로 format 맞춰서 저장
 >

@@ -101,11 +101,11 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
-  switch (actions.type) {
+  switch (action.type) {
     case GET_LEADS:
       return {
         ...state,
-        leads: actions.payload
+        leads: action.payload
       };
     default:
       return state;
@@ -165,9 +165,12 @@ npm i axios
 
 * > *axios*는 Promise 기반의 자바스크립트 비동기 처리방식을 사용합니다. 그래서 요청후 .then()으로 결과값을 받아서 처리를 하는 형식으로 구성.
 
+
+
 #### dispatch
 
 * dispatch an action to our reducer such as GET_LEADS
+* 액션을 리듀서에게 전달함
 
 ```js
 // http requests
@@ -232,7 +235,7 @@ export default connect(mapStateToProps)(Leads);
 * 요기에서 생성되었던 state를 이  component의 props에  map한다.
   * this.props.leads
 
-* state.leads (-> we want leads reducers) .leads (-> 노란색 박스안에 있는 그 leads! ) 
+* state.leads (-> we want leads reducerㄹs) .leads (-> 노란색 박스안에 있는 그 leads! ) 
   * 즉, reducer.leads
 
 
