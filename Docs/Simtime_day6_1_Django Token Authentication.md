@@ -164,15 +164,16 @@ INSTALLED_APPS = [
   ]
 
   ...
-  REST_FRAMEWORK = {
+  
+REST_FRAMEWORK = {
       'DEFAULT_AUTHENTICATION_CLASSES':
-      ('knox.auth.TokenAuthentication', )
+      ('knox.auth.TokenAuthentication', ) # Tuple에서 ,를 제외하면 string으로 인식한다.
+}
 
 
 
-# Tuple에서 ,를 제외하면 string으로 인식한다.
 
-  }
+
 ```
 
   그리고 python manage.py migrate
@@ -207,7 +208,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email', 'password')
-        extra_kwargs = {'password': {'write_only': True}}.create
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validate_data):
         user = User.objects.create_user(
@@ -242,7 +243,7 @@ class RegisterSerializer(serializers.ModelSerializer):
       def post(self, request, *args, **kwargs):
           serializer = self.get_serializer(data=request.data)
           serializer.is_valid(raise_exception=True)
-          user = serializer.savd()
+          user = serializer.save()
   
           # response back
           return Response({
