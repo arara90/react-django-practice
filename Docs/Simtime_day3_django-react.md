@@ -126,7 +126,9 @@ module.exports = {
      
    ```
 
-9. main app components로 위에 명시한 index.js를 CREATE!
+   
+
+9. src>components>App.js
 
    ```python
    import React,{Component} from 'react';
@@ -144,9 +146,16 @@ module.exports = {
 
    
 
-10. src/templates 에 index.html
+10. src > index.js
+
+    ```python
+    import App from "./components/APP";
+    ```
 
     
+
+11. templates 에 index.html
+
 
 ```html
 <!DOCTYPE html>
@@ -484,7 +493,7 @@ export default Header
 
 
 
-> [ tips ] extention [**Prettier** - Code formatteresbenp]
+> [ tips ] extention [**Prettier** - Code formatter]
 >
 > -> 자동으로 format 맞춰서 저장
 >

@@ -2,13 +2,42 @@
 
 * 유투브 강의 : [Traversy Media - Full Stack React & Django [4] - Error Handling & Alerts](https://youtu.be/Fia-GGgHpK0)
 
-### 
+* 참고 : [팝업과 메시지 with React]([https://hyunvinci.tistory.com/entry/41-%EC%98%88%EC%99%B8%EC%B2%98%EB%A6%AC%EC%99%80-%EC%95%8C%EB%A6%BC-%EC%84%9C%EB%B9%84%EC%8A%A4third-party-package%EC%8D%A8%EB%93%9C%ED%8C%8C%ED%8B%B0-%EC%82%AC%EC%9A%A9-%EC%98%81%EC%96%B4%EC%8C%A4%EC%9D%B4-%EB%A7%8C%EB%93%9C%EB%8A%94-%ED%9A%8C%EC%9B%90%EA%B0%80%EC%9E%85-%EC%9D%B8%EC%A6%9DCRUD-%EB%A7%8C%EB%93%A4%EC%96%B4%EC%9A%A4-%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%99%80-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%9E%A5%EA%B3%A0](https://hyunvinci.tistory.com/entry/41-예외처리와-알림-서비스third-party-package써드파티-사용-영어쌤이-만드는-회원가입-인증CRUD-만들어욤-리액트와-파이썬-장고))
+
+
+
+1. Alert Component 만들기 -> react-alert의 withAlert
+
+   
+
+2. App에 (Alert 띄울 화면)에reat-alert가 제공하는 Provider 사용해서 감싸기
+
+   Provider에는 Alert의 position및 timeout 설정, template가 속성으로 들어간다.
+
+3. App에 (Alert 띄울 화면)에 1에서 만들었던 Alert Component 코드 내에 넣어주기.
+
+
+
+4. action type에 등록하고 GET_ERRORS 작성, action에서 catch에 걸릴 경우
+
+err => console.log(err.response.data)) 에서 전달받은 err에 대한 상태를 볼 수 있음
+
+
+
+5. reducer에 등록해서 alert 고쳐보기
+
+    -> catch에서 변수에 에러 메시지, 상태 저장 후에 dispatch 하기.
+
+
 
 ### Data 입력하지 않고 Submit
 
 ![submitwithoutdata](https://github.com/arara90/images/blob/master/Simtime/simtime%20025.png?raw=true)
 
 WHY? .isRequired로 설정한 Name과 Email에 대한 정보가 없기때문에 Format Error다.
+
+* 근데 어디에서 isRequired로 했더라...ㅠㅠ?
+  * Invitations -> model.py : blank=False로 했더니 'This field may not be blank.' Error 발생! 
 
 
 
@@ -58,7 +87,7 @@ export default withAlert()(Alerts);
 ```js
 import {Provider as AlertProvider} from 'react-alert';
 import AlertTemplate from 'react-alert-template-basic';
-import Alerts from "./layout/Alert";
+import Alerts from "./layout/Alerts";
 ...
 
 // Alert Options 추가
@@ -92,22 +121,9 @@ ReactDom.render(<App />, document.getElementById("app"));
 
 
 
-* **src > reducers> index.js** 
-
-```js
-import { combineReducers } from "redux";
-import leads from "./leads";
-
-export default combineReducers({
-  leads,
-  errors
-});
-
-```
 
 
-
-* **src > conponents > App.js**
+* **src > actions> type.js**
 
 ```js
 export const GET_LEADS = "GET_LEADS";
@@ -147,7 +163,55 @@ export const addLead = lead => dispatch => {
 
 
 
-#### 다른 메세지로 고쳐보자.
+
+
+
+
+### 다른 메세지로 고쳐보자.
+
+
+
+* **src > reducers> index.js** 
+
+```js
+import { combineReducers } from "redux";
+import leads from "./leads";
+
+export default combineReducers({
+  leads,
+  errors
+});
+
+```
+
+
+
+* **src > reducers > errors.js**
+
+```js
+import { GET_ERRORS } from "../actions/types";
+
+const initialState = {
+  msg: {},
+  status: null
+};
+
+export default function(state = initialState, action) {
+  switch (action.type) {
+    case GET_ERRORS:
+      return {
+        msg: action.payload.msg,
+        status: action.payload.status
+      };
+    default:
+      return state;
+  }
+}
+```
+
+
+
+
 
 * **src > actions> leads.js**
 
