@@ -44,7 +44,7 @@ export const login = (username, password) => dispatch => {
     .post("/api/auth/login", body, config)
     .then(res => {
       dispatch({
-        type: USER_SUCCESS,
+        type: LOGIN_SUCCESS,
         payload: res.data
       });
     })

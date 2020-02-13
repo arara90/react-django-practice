@@ -293,7 +293,7 @@ ReactDom.render(<App />, document.getElementById("app"));
 
 ### State로 Auth 관리
 
-##### frontend > src > components > reducers > auth.js
+##### frontend > src  > reducers > auth.js
 
 ```js
 const initialState = {
