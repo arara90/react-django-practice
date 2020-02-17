@@ -350,9 +350,11 @@ export default combineReducers({
 
 
 
-[ 참고 ] https://www.w3schools.com/html/html5_webstorage.asp
-
-​             https://www.youtube.com/watch?v=C_qTjHBlkks
+> **[ 참고 ]** 
+>
+> https://www.w3schools.com/html/html5_webstorage.asp
+>
+> https://www.youtube.com/watch?v=C_qTjHBlkks
 
 
 
