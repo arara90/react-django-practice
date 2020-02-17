@@ -333,6 +333,29 @@ export default combineReducers({
 
 
 
+##### [localStorage] - 데이터를 새로고침해도 유지하기. 브라우저에 데이터 저장.
+
+* html5 부터 지원되는 데이터 저장 공간
+* 쿠키 4kb 정도까지 지원되지만 localStorage는 적어도 5MB를 지원한다 (브라우저마다 다르다)
+
+* 서버로 전송되지 않음 
+
+* 텍스트 형태로만 저장할 수 있
+
+  ```js
+  let object = {text: 'Hello'}
+  localStorage.state = JSON.stringify(object); // 객체서 스트링으로 변환 후 저장 "{"text":"Hello"}" 
+  JSON.parse(localStorage.state); // 스트링에서 객체 형태로 꺼내오기 {text: "codelab"}
+  ```
+
+
+
+[ 참고 ] https://www.w3schools.com/html/html5_webstorage.asp
+
+​             https://www.youtube.com/watch?v=C_qTjHBlkks
+
+
+
 ### privateRoute
 
 * Check to see if the user is logged in.
