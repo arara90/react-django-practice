@@ -1,5 +1,3 @@
-# .
-
 # (React) Auth_State&Private_Routes
 
 * 유투브 강의 : [Full Stack React & Django [7] - Frontend Authentication](https://youtu.be/kfpY5BsIoFg?list=PLillGF-RfqbbRA-CIUxlxkUpbq0IFkX60)
